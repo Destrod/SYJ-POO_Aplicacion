@@ -16,14 +16,14 @@ class Usuario:
 
 # Función para crear un nuevo usuario pidiendo la ID como los últimos dígitos de la cédula
 def crear_usuario():
-    id_usuario = input("Introduce los últimos 4 dígitos de tu cédula: ")
+    id_usuario = input("Introduce los ultimos 4 digitos de tu cedula: ")
     while not id_usuario.isdigit() or len(id_usuario) != 4:
-        print("Por favor, introduce un número válido de 4 dígitos.")
-        id_usuario = input("Introduce los últimos 4 dígitos de tu cédula: ")
+        print("Por favor, introduce un numero valido de 4 digitos.")
+        id_usuario = input("Introduce los ultimos 4 digitos de tu cedula: ")
 
     nombre = input("Introduce tu nombre: ")
     apellido = input("Introduce tu apellido: ")
-    contrasena = input("Introduce tu contraseña: ")
+    contrasena = input("Introduce tu contrasena: ")
 
     # Crear una instancia de Usuario con los datos proporcionados
     nuevo_usuario = Usuario(id_usuario, nombre, apellido, contrasena)
