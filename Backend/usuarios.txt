@@ -1,7 +1,0 @@
-ID, Nombre, Apellido, Contraseña, Tipo de Usuario, Nombre de Usuario
-23445, qwee, ssdf, 1234567, Profesor, qwee.ssdf.admin3445
-1332852, luis, dias, 12345678, Alumno, luis.dias.2852
-91287558, fernando, velasco, 123456, Profesor, fernando.velasco.admin7558
-1036925643, joel, velasco, 123456, Profesor, joel.velasco.admin5643
-1036925643, joel, velasco, 123456, Profesor, joel.velasco.admin5643
-91287558, fernando, velasco, 1234567, Alumno, fernando.velasco.7558
