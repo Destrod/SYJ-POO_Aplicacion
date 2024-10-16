@@ -1,0 +1,241 @@
+from usuario import Usuario
+from alumno import Alumno
+from profesor import Profesor
+from materia import Materia
+
+# Almacenamiento simulado
+usuarios = []
+
+
+# Función para cargar usuarios desde el archivo .txt
+def cargar_usuarios_desde_archivo():
+    try:
+        with open('usuarios.txt', 'r') as archivo:
+            usuario_actual = None
+            for linea in archivo.readlines():
+                datos = linea.strip().split(", ")
+
+                if len(datos) == 5:
+                    id_usuario, nombre, apellido, contrasena, tipo_usuario = datos
+
+                    if tipo_usuario == "Alumno":
+                        # Modificado: nombre de usuario para alumnos con el formato nombre.apellido.XXXX
+                        nombre_usuario = f"{nombre.lower()}.{apellido.lower()}.{str(id_usuario)[-4:]}"
+                        usuario_actual = Alumno(int(id_usuario), nombre, apellido, contrasena, nombre_usuario)
+                    elif tipo_usuario == "Profesor":
+                        nombre_usuario = f"{nombre.lower()}.{apellido.lower()}.admin{str(id_usuario)[-4:]}"
+                        usuario_actual = Profesor(int(id_usuario), nombre, apellido, contrasena, nombre_usuario)
+
+                    usuarios.append(usuario_actual)
+
+                elif len(datos) > 0 and usuario_actual and isinstance(usuario_actual, Alumno):
+                    if datos[0].startswith("Materia"):
+                        nombre_materia = datos[0].split(": ")[1]
+                        notas = datos[1].split(": ")[1]
+                        seguimiento, parcial, final = [float(nota.split(": ")[1]) for nota in notas.split(", ")]
+
+                        materia = Materia(nombre_materia, usuario_actual)
+                        materia.asignarNota(seguimiento, parcial, final)
+                        usuario_actual.materias.append(materia)
+
+    except FileNotFoundError:
+        print("El archivo de usuarios no existe. Se creará cuando se añadan usuarios nuevos.")
+
+
+# Función para crear un nuevo profesor
+def crear_profesor():
+    try:
+        id_profesor = int(input("ID del profesor: "))
+        nombre = input("Nombre: ")
+        apellido = input("Apellido: ")
+
+        while True:
+            contrasena = input("Contraseña (6-10 caracteres): ")
+            if 6 <= len(contrasena) <= 10:
+                break
+            print("La contraseña debe tener entre 6 y 10 caracteres. Inténtalo de nuevo.")
+
+        nuevo_profesor = Profesor(id_profesor, nombre, apellido, contrasena, f"{nombre.lower()}.{apellido.lower()}.admin{str(id_profesor)[-4:]}")
+        usuarios.append(nuevo_profesor)
+        print(f"Profesor creado: {nuevo_profesor.visualizarUsuario()}")
+        guardar_usuario_en_archivo(nuevo_profesor)
+        return nuevo_profesor
+    except ValueError as e:
+        print(e)
+
+
+# Función para crear un nuevo alumno
+def crear_alumno():
+    try:
+        id_alumno = int(input("ID del alumno: "))
+        nombre = input("Nombre: ")
+        apellido = input("Apellido: ")
+
+        while True:
+            contrasena = input("Contraseña (6-10 caracteres): ")
+            if 6 <= len(contrasena) <= 10:
+                break
+            print("La contraseña debe tener entre 6 y 10 caracteres. Inténtalo de nuevo.")
+
+        # Modificado: nombre de usuario para alumnos con el formato nombre.apellido.XXXX
+        nuevo_alumno = Alumno(id_alumno, nombre, apellido, contrasena, f"{nombre.lower()}.{apellido.lower()}.{str(id_alumno)[-4:]}")
+        usuarios.append(nuevo_alumno)
+        print(f"Alumno creado: {nuevo_alumno.visualizarUsuario()}")
+        guardar_usuario_en_archivo(nuevo_alumno)
+        return nuevo_alumno
+    except ValueError as e:
+        print(e)
+
+
+# Función para guardar un usuario en un archivo .txt
+def guardar_usuario_en_archivo(usuario):
+    with open('usuarios.txt', 'a') as archivo:
+        archivo.write(
+            f"{usuario.id}, {usuario.nombre}, {usuario.apellido}, {usuario.contrasena}, {type(usuario)._name_}\n")
+        if isinstance(usuario, Alumno):
+            for materia in usuario.materias:
+                archivo.write(f"  Materia: {materia.nombre}, Notas: {materia.visualizarNotas()}\n")
+
+
+# Función para iniciar sesión
+def iniciar_sesion(nombre_usuario, contrasena):
+    for usuario in usuarios:
+        if usuario.nombreUsuario == nombre_usuario and usuario.contrasena == contrasena:
+            print(f"Inicio de sesión exitoso. Bienvenido {usuario.nombre} {usuario.apellido}")
+            return usuario
+    print("Credenciales inválidas. Inténtalo de nuevo.")
+    return None
+
+
+# Función para gestionar el proceso de inicio de sesión
+def gestionar_inicio_sesion():
+    nombre_usuario = input("Nombre de usuario: ")
+    contrasena = input("Contraseña: ")
+    return iniciar_sesion(nombre_usuario, contrasena)
+
+
+# Función para gestionar el menú del profesor
+def gestionar_menu_profesor(profesor):
+    while True:
+        print("1. Crear usuario alumno")
+        print("2. Crear materia para un alumno")
+        print("3. Asignar notas a un alumno")
+        print("4. Visualizar materias de un alumno")
+        print("20. Cerrar sesión")
+        print("21. Salir")
+
+        opcion = input("Selecciona una opción: ").strip()
+
+        if opcion == "1":
+            crear_alumno()
+
+        elif opcion == "2":
+            id_alumno = int(input("ID del alumno: "))
+            alumno = next((u for u in usuarios if isinstance(u, Alumno) and u.id == id_alumno), None)
+            if alumno:
+                nombre_materia = input("Nombre de la materia: ")
+                materia = Materia(nombre_materia, alumno)
+                alumno.materias.append(materia)
+                materia.guardar_materia()
+                print(f"Materia '{nombre_materia}' creada y asignada al alumno {alumno.nombre}")
+            else:
+                print("Alumno no encontrado.")
+
+        elif opcion == "3":
+            id_alumno = int(input("ID del alumno: "))
+            alumno = next((u for u in usuarios if isinstance(u, Alumno) and u.id == id_alumno), None)
+            if alumno:
+                nombre_materia = input("Nombre de la materia: ")
+                materia = next((m for m in alumno.materias if m.nombre == nombre_materia), None)
+                if materia:
+                    materia.asignarNota()
+                    print(f"Notas asignadas para la materia {nombre_materia}")
+                else:
+                    print(f"El alumno {alumno.nombre} no está matriculado en la materia {nombre_materia}.")
+            else:
+                print("Alumno no encontrado.")
+
+        elif opcion == "4":
+            id_alumno = int(input("ID del alumno: "))
+            alumno = next((u for u in usuarios if isinstance(u, Alumno) and u.id == id_alumno), None)
+            if alumno:
+                for materia in alumno.materias:
+                    print(f"Materia: {materia.nombre}, Notas: {materia.visualizarNotas()}")
+            else:
+                print("Alumno no encontrado.")
+
+        elif opcion == "20":
+            print("Cerrando sesión...")
+            return
+
+        elif opcion == "21":
+            print("Saliendo...")
+            exit()
+
+        else:
+            print("Opción no válida.")
+
+
+# Función para gestionar el menú del alumno
+def gestionar_menu_alumno(alumno):
+    while True:
+        print("1. Ver materias matriculadas")
+        print("2. Ver notas de las materias")
+        print("20. Cerrar sesión")
+        print("21. Salir")
+
+        opcion = input("Selecciona una opción: ").strip()
+
+        if opcion == "1":
+            for materia in alumno.materias:
+                print(f"Materia: {materia.nombre}")
+
+        elif opcion == "2":
+            for materia in alumno.materias:
+                print(f"Materia: {materia.nombre}, Notas: {materia.visualizarNotas()}")
+
+        elif opcion == "20":
+            print("Cerrando sesión...")
+            return
+
+        elif opcion == "21":
+            print("Saliendo...")
+            exit()
+
+        else:
+            print("Opción no válida.")
+
+
+# Menú principal
+def menu():
+    cargar_usuarios_desde_archivo()
+    while True:
+        print("\n--- Sistema de Notas Académicas ---")
+        print("1. Crear usuario profesor")
+        print("2. Iniciar sesión")
+        print("20. Salir")
+
+        opcion = input("Selecciona una opción: ").strip()
+
+        if opcion == "1":
+            crear_profesor()
+
+        elif opcion == "2":
+            usuario_activo = gestionar_inicio_sesion()
+            if isinstance(usuario_activo, Profesor):
+                gestionar_menu_profesor(usuario_activo)
+            elif isinstance(usuario_activo, Alumno):
+                gestionar_menu_alumno(usuario_activo)
+            else:
+                print("Tipo de usuario no reconocido.")
+
+        elif opcion == "20":
+            print("Saliendo...")
+            break
+
+        else:
+            print("Opción no válida. Inténtalo de nuevo.")
+
+
+# Iniciar el programa
+menu()
