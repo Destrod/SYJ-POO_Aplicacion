@@ -1,5 +1,5 @@
 class Nota:
-    def __init__(self, seguimiento, parcial, final):
+    def __init__(self, seguimiento=None, parcial=None, final=None):
         self.seguimiento = seguimiento
         self.parcial = parcial
         self.final = final
@@ -18,13 +18,6 @@ class Nota:
                     print("La nota debe estar entre 0 y 5. Por favor, ingrese un valor válido.")
             except ValueError:
                 print("Por favor, ingrese un número válido.")
-
-    def editarNota(self):
-        # Pedir las nuevas notas y validarlas
-        self.seguimiento = self.validarNota("Ingrese la nueva nota de seguimiento (0-5): ")
-        self.parcial = self.validarNota("Ingrese la nueva nota del parcial (0-5): ")
-        self.final = self.validarNota("Ingrese la nueva nota final (0-5): ")
-        print("Notas actualizadas")
 
     def crearNota(self):
         # Pedir las notas y validarlas
