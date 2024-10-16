@@ -45,7 +45,7 @@ def cargar_usuarios_desde_archivo():
                         usuario_actual.materias.append(materia)
 
     except FileNotFoundError:
-        print("El archivo de usuarios no existe. Se creara cuando se agreguen usuarios nuevos.")
+        print("El archivo de usuarios no existe. Se creará cuando se añadan usuarios nuevos.")
 
 # Fábrica de usuarios para reducir acoplamiento (ahora se solicita el ID por consola)
 def fabrica_usuarios(id_usuario, nombre, apellido, contrasena, tipo_usuario):
@@ -61,7 +61,7 @@ def fabrica_usuarios(id_usuario, nombre, apellido, contrasena, tipo_usuario):
         nombre_usuario = f"{nombre.lower()}.{apellido.lower()}.admin{ultimos_cuatro_digitos}"
         return Profesor(id_usuario, nombre, apellido, contrasena, nombre_usuario)
     else:
-        raise ValueError("Tipo de usuario no valido")
+        raise ValueError("Tipo de usuario no válido")
 
 
 # Función para crear un nuevo profesor (ahora se solicita el ID y valida la longitud de la contraseña)
@@ -73,10 +73,10 @@ def crear_profesor():
 
         # Validar que la contraseña tenga entre 6 y 10 caracteres
         while True:
-            contrasena = input("Contrasena (6-10 caracteres): ")
+            contrasena = input("Contraseña (6-10 caracteres): ")
             if 6 <= len(contrasena) <= 10:
                 break
-            print("La contrasena debe tener entre 6 y 10 caracteres. Intentalo de nuevo.")
+            print("La contraseña debe tener entre 6 y 10 caracteres. Inténtalo de nuevo.")
 
         nuevo_profesor = fabrica_usuarios(id_profesor, nombre, apellido, contrasena, "profesor")
         usuarios.append(nuevo_profesor)
@@ -96,10 +96,10 @@ def crear_alumno():
 
         # Validar que la contraseña tenga entre 6 y 10 caracteres
         while True:
-            contrasena = input("Contrasena (6-10 caracteres): ")
+            contrasena = input("Contraseña (6-10 caracteres): ")
             if 6 <= len(contrasena) <= 10:
                 break
-            print("La contrasena debe tener entre 6 y 10 caracteres. Intentalo de nuevo.")
+            print("La contraseña debe tener entre 6 y 10 caracteres. Inténtalo de nuevo.")
 
         nuevo_alumno = fabrica_usuarios(id_alumno, nombre, apellido, contrasena, "alumno")
         usuarios.append(nuevo_alumno)
@@ -133,16 +133,16 @@ def guardar_notas_en_archivo(alumno):
 def iniciar_sesion(nombre_usuario, contrasena):
     for usuario in usuarios:
         if usuario.nombreUsuario == nombre_usuario and usuario.contrasena == contrasena:
-            print(f"Inicio de sesion exitoso. Bienvenido {usuario.nombre} {usuario.apellido}")
+            print(f"Inicio de sesión exitoso. Bienvenido {usuario.nombre} {usuario.apellido}")
             return usuario
-    print("Credenciales invalidas. Intentalo de nuevo.")
+    print("Credenciales inválidas. Inténtalo de nuevo.")
     return None
 
 
 # Función para gestionar el proceso de inicio de sesión
 def gestionar_inicio_sesion():
     nombre_usuario = input("Nombre de usuario: ")
-    contrasena = input("Contrasena: ")
+    contrasena = input("Contraseña: ")
     return iniciar_sesion(nombre_usuario, contrasena)
 
 
@@ -163,10 +163,10 @@ def gestionar_menu_profesor(profesor):
         print("2. Crear materia para un alumno")
         print("3. Asignar notas a un alumno")
         print("4. Visualizar materias de un alumno")
-        print("20. Cerrar sesion")
+        print("20. Cerrar sesión")
         print("21. Salir")
 
-        opcion = input("Selecciona una opcion: ").strip()
+        opcion = input("Selecciona una opción: ").strip()
 
         if opcion == "1":
             crear_alumno()  # Usamos la nueva función para crear alumnos
@@ -201,7 +201,7 @@ def gestionar_menu_profesor(profesor):
                 print("Alumno no encontrado.")
 
         elif opcion == "20":
-            print("Cerrando sesion...")
+            print("Cerrando sesión...")
             return
 
         elif opcion == "21":
@@ -209,7 +209,7 @@ def gestionar_menu_profesor(profesor):
             exit()
 
         else:
-            print("Opcion no valida.")
+            print("Opción no válida.")
 
 
 # Función para gestionar el menú del alumno
@@ -217,10 +217,10 @@ def gestionar_menu_alumno(alumno):
     while True:
         print("1. Ver materias matriculadas")
         print("2. Ver notas de las materias")
-        print("20. Cerrar sesion")
+        print("20. Cerrar sesión")
         print("21. Salir")
 
-        opcion = input("Selecciona una opcion: ").strip()
+        opcion = input("Selecciona una opción: ").strip()
 
         if opcion == "1":
             materias = alumno.leerMaterias()
@@ -232,7 +232,7 @@ def gestionar_menu_alumno(alumno):
                 print(f"Materia: {materia}, Notas: {notas_materia}")
 
         elif opcion == "20":
-            print("Cerrando sesion...")
+            print("Cerrando sesión...")
             return
 
         elif opcion == "21":
@@ -240,19 +240,19 @@ def gestionar_menu_alumno(alumno):
             exit()
 
         else:
-            print("Opción no valida.")
+            print("Opción no válida.")
 
 
 # Menú principal mejorado
 def menu():
     cargar_usuarios_desde_archivo()  # Cargar usuarios del archivo antes de empezar el menú
     while True:
-        print("\n--- Sistema de Notas Academicas ---")
+        print("\n--- Sistema de Notas Académicas ---")
         print("1. Crear usuario profesor")
-        print("2. Iniciar sesion")
+        print("2. Iniciar sesión")
         print("20. Salir")
 
-        opcion = input("Selecciona una opcion: ").strip()
+        opcion = input("Selecciona una opción: ").strip()
 
         if opcion == "1":
             crear_profesor()  # Solo crear profesores aquí
@@ -271,6 +271,6 @@ def menu():
             break
 
         else:
-            print("Opcion no valida. Intentalo de nuevo.")
+            print("Opción no válida. Inténtalo de nuevo.")
 
 menu()

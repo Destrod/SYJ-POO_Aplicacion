@@ -15,9 +15,9 @@ class Nota:
                 if 0 <= valor <= 5:
                     return valor
                 else:
-                    print("La nota debe estar entre 0 y 5. Por favor, ingrese un valor valido.")
+                    print("La nota debe estar entre 0 y 5. Por favor, ingrese un valor válido.")
             except ValueError:
-                print("Por favor, ingrese un numero valido.")
+                print("Por favor, ingrese un número válido.")
 
     def editarNota(self):
         # Pedir las nuevas notas y validarlas

@@ -1,32 +1,20 @@
-class Usuario:
-    def __init__(self, id, nombre, apellido, contrasena):
-        self.id = id
-        self.nombre = nombre
-        self.apellido = apellido
-        self.contrasena = contrasena
-        # Combina nombre, apellido y id para crear nombreUsuario
-        self.nombreUsuario = f"{nombre.lower()}.{apellido.lower()}.{id}"
+# profesor.py
+from usuario import Usuario
+from materia import Materia  # Asegúrate de que la ruta sea correcta
 
-    def validarUsuario(self, contrasena):
-        return self.contrasena == contrasena
+class Profesor(Usuario):
+    def __init__(self, id, nombre, apellido, contrasena, nombre_usuario):
+        # Inicializa los atributos
+        super().__init__(id, nombre, apellido, contrasena)
+        self.nombreUsuario = nombre_usuario  # Asignar el nombre de usuario específico del profesor
 
-    def visualizarUsuario(self):
-        return {"id": self.id, "nombre": f"{self.nombre} {self.apellido}", "nombreUsuario": self.nombreUsuario}
+    # Método para crear una nueva materia y asignarla a un alumno
+    def crearMateria(self, alumno, nombre_materia):
+        nueva_materia = Materia(nombre_materia, alumno)
+        alumno.materias.append(nueva_materia)
+        print(f"Materia '{nombre_materia}' creada y asignada al alumno {alumno.nombre} {alumno.apellido}")
 
-
-# Función para crear un nuevo usuario pidiendo la ID como los últimos dígitos de la cédula
-def crear_usuario():
-    id_usuario = input("Introduce los ultimos 4 digitos de tu cedula: ")
-    while not id_usuario.isdigit() or len(id_usuario) != 4:
-        print("Por favor, introduce un numero valido de 4 digitos.")
-        id_usuario = input("Introduce los ultimos 4 digitos de tu cedula: ")
-
-    nombre = input("Introduce tu nombre: ")
-    apellido = input("Introduce tu apellido: ")
-    contrasena = input("Introduce tu contrasena: ")
-
-    # Crear una instancia de Usuario con los datos proporcionados
-    nuevo_usuario = Usuario(id_usuario, nombre, apellido, contrasena)
-
-    print(f"Usuario creado: {nuevo_usuario.visualizarUsuario()}")
-    return nuevo_usuario
+    def visualizarMaterias(self, alumno):
+        for materia in alumno.materias:
+            print(f"Materia: {materia.nombre}")
+            materia.visualizarAlumno()
